@@ -52,5 +52,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/corbitsdev/corbits-codex-provider.git"
+  },
+  "homepage": "https://github.com/corbitsdev/corbits-codex-provider",
+  "bugs": {
+    "url": "https://github.com/corbitsdev/corbits-codex-provider/issues"
   }
 }

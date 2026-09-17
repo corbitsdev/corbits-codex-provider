@@ -10,12 +10,12 @@ token storage, or usage/quota reporting — a host composes those itself from
 ## Install
 
 ```sh
-bun add github:corbitsdev/corbits-codex-provider
+bun add @corbits/codex-provider
 ```
 
-The package ships TypeScript source and needs no build step; Bun consumes it
-directly. `@intx/inference` and `@intx/types` are peer dependencies and
-resolve to the host's own copy.
+The package ships TypeScript source on npm and needs no build step; Bun
+consumes it directly. `@intx/inference` and `@intx/types` are peer
+dependencies and resolve to the host's own copy.
 
 ## Usage
 

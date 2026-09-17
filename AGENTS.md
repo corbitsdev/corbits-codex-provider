@@ -27,9 +27,8 @@ than reimplementing OAuth or the Responses wire protocol.
   never `as T` untrusted input.
 - `exactOptionalPropertyTypes` is on: omit optional keys, never assign
   `undefined` to them.
-- `bun.lock` is committed once `@corbits/oauth-core` and
-  `@corbits/openai-responses` are on GitHub; a lockfile written against
-  `bun link` symlinks would not resolve for anyone else.
+- `bun.lock` is committed. Never commit a lockfile written against
+  `bun link` symlinks — it would not resolve for anyone else.
 - No product strings baked in; `CodexQuirks` is the only injection point for
   a host's identity, and an absent bag is a validation error, not a default.
 - Tests exist only for load-bearing risk: the exact Codex request shape,
@@ -56,6 +55,5 @@ across that boundary.
 ## Distribution
 
 The package ships TypeScript source: `exports` points at `src/index.ts`,
-there is no build step and no `dist/`. Consumers install it with
-`bun add github:corbitsdev/corbits-codex-provider` and Bun runs the source
-as-is.
+there is no build step and no `dist/`. Consumers install it from npm with
+`bun add @corbits/codex-provider` and Bun runs the source as-is.
