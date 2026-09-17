@@ -1,6 +1,6 @@
 {
   "name": "@corbits/codex-provider",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenAI Codex (Login with ChatGPT) as an Interchange inference provider, with OAuth token exchange, a Responses-protocol adapter, and a content-type repair for the ChatGPT backend.",
   "license": "LGPL-2.1-only",
   "author": "Sawyer Cutler <sawyer@dirtroad.dev>",
