@@ -13,6 +13,8 @@ token storage, or usage/quota reporting — a host composes those itself from
 bun add @corbits/codex-provider
 ```
 
+Requires Node >= 24 and Bun >= 1.2.
+
 The package ships TypeScript source on npm and needs no build step; Bun
 consumes it directly. `@intx/inference` and `@intx/types` are peer
 dependencies and resolve to the host's own copy.
