@@ -2,7 +2,11 @@
 
 OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth constants and token mapping for `@corbits/oauth-core`, and a Responses adapter for Codex's ChatGPT backend over `@corbits/openai-responses`. It does not run login, store tokens, or report usage — the host composes those from `@corbits/oauth-core`.
 
-## Install
+## Runtime support
+
+Bun >= 1.2 runs the published TypeScript source. Node >= 24 is an engines floor for tooling; native Node does not load this extensionless TypeScript source as-is. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
+
+## Quickstart
 
 ```sh
 npm add @corbits/codex-provider
@@ -10,10 +14,6 @@ pnpm add @corbits/codex-provider
 yarn add @corbits/codex-provider
 bun add @corbits/codex-provider
 ```
-
-Requires Node >= 24 and Bun >= 1.2. The package ships TypeScript source; Bun consumes it directly. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
-
-## Use
 
 Register the adapter under the host's provider id. `CodexQuirks` (`productName`, `environmentTagName`) has no default — an absent bag is a validation error.
 
@@ -40,8 +40,6 @@ void fetch;
 ```
 
 `codexOAuthConfig`, `exchangeCodexCode`, and `refreshCodexTokens` plug into `@corbits/oauth-core`'s `startOAuthLogin` and `createTokenSession`.
-
-## Full example
 
 ```ts
 import type { InferenceSource } from "@intx/types/runtime";
@@ -73,9 +71,11 @@ The ChatGPT backend omits `content-type` on some streamed responses; wrap the ho
 
 Codex has no API-key path — only the ChatGPT OAuth subscription token. This package identifies as the public Codex CLI (`originator: codex_cli_rs`) because that backend only serves that client. A host operating prompt rides as the leading `developer` message via `wrapCodexBridgeMessage`; there is no `instructions` field.
 
-## Contributing
+## Development
 
 ```sh
+git clone https://github.com/corbitsdev/corbits-codex-provider.git
+cd corbits-codex-provider
 bun install
 bun run typecheck
 bun run lint
