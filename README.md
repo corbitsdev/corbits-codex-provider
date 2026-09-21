@@ -1,54 +1,60 @@
 # @corbits/codex-provider
 
-An Interchange inference provider for OpenAI Codex ("Login with ChatGPT"):
-OAuth constants and token mapping for `@corbits/oauth-core`, and a
-Responses-protocol adapter for Codex's ChatGPT backend built on
-`@corbits/openai-responses`. It does not implement login flow orchestration,
-token storage, or usage/quota reporting — a host composes those itself from
-`@corbits/oauth-core` directly.
+OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth constants and token mapping for `@corbits/oauth-core`, and a Responses adapter for Codex's ChatGPT backend over `@corbits/openai-responses`. It does not run login, store tokens, or report usage — the host composes those from `@corbits/oauth-core`.
 
 ## Install
 
 ```sh
+npm add @corbits/codex-provider
+pnpm add @corbits/codex-provider
+yarn add @corbits/codex-provider
 bun add @corbits/codex-provider
 ```
 
-Requires Node >= 24 and Bun >= 1.2.
+Requires Node >= 24 and Bun >= 1.2. The package ships TypeScript source; Bun consumes it directly. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
 
-The package ships TypeScript source on npm and needs no build step; Bun
-consumes it directly. `@intx/inference` and `@intx/types` are peer
-dependencies and resolve to the host's own copy.
+## Use
 
-## Usage
+Register the adapter under the host's provider id. `CodexQuirks` (`productName`, `environmentTagName`) has no default — an absent bag is a validation error.
 
 ```ts
 import type { AdapterManifest } from "@intx/inference";
-import { createDefaultScheduler } from "@intx/inference";
-import { loadAdapterRegistry } from "@intx/inference/providers";
-import type { InferenceSource } from "@intx/types/runtime";
-import { withCodexContentTypeRepair } from "@corbits/codex-provider";
+import {
+  CODEX_PROVIDER,
+  createCodexResponsesAdapter,
+  withCodexContentTypeRepair,
+} from "@corbits/codex-provider";
 
 const manifest: AdapterManifest = [
   {
-    provider: "codex",
+    provider: CODEX_PROVIDER,
     specifier: "@corbits/codex-provider",
     export: "createCodexResponsesAdapter",
   },
 ];
 
-const adapters = await loadAdapterRegistry(manifest);
-const dependencies = {
-  adapters,
-  fetch: withCodexContentTypeRepair(fetch),
-  scheduler: createDefaultScheduler(),
-};
+const fetch = withCodexContentTypeRepair(globalThis.fetch);
+void createCodexResponsesAdapter;
+void manifest;
+void fetch;
+```
 
-// Quirks ride on the `InferenceSource` the harness resolves at call time,
-// not on the manifest entry:
+`codexOAuthConfig`, `exchangeCodexCode`, and `refreshCodexTokens` plug into `@corbits/oauth-core`'s `startOAuthLogin` and `createTokenSession`.
+
+## Full example
+
+```ts
+import type { InferenceSource } from "@intx/types/runtime";
+import {
+  CODEX_BASE_URL,
+  CODEX_PROVIDER,
+  createCodexResponsesAdapter,
+} from "@corbits/codex-provider";
+
 const source: InferenceSource = {
   id: "codex/1",
-  provider: "codex",
-  baseURL: "https://chatgpt.com/backend-api",
+  provider: CODEX_PROVIDER,
+  baseURL: CODEX_BASE_URL,
   apiKey: "",
   model: "gpt-5.5",
   quirks: {
@@ -56,49 +62,29 @@ const source: InferenceSource = {
     environmentTagName: "my_harness_environment",
   },
 };
+
+const adapter = createCodexResponsesAdapter(source, source.quirks);
+void adapter;
 ```
 
-`codexOAuthConfig`, `exchangeCodexCode`, and `refreshCodexTokens` plug
-directly into `@corbits/oauth-core`'s `startOAuthLogin` and
-`createTokenSession`, as shown in that package's own README.
+The ChatGPT backend omits `content-type` on some streamed responses; wrap the host `fetch` with `withCodexContentTypeRepair` so the harness sees SSE.
 
-## API
+## How it works
 
-See `src/index.ts` for the full public surface and its TSDoc; the Codex
-`quirks` shape is `CodexQuirks` in `src/quirks.ts`.
+Codex has no API-key path — only the ChatGPT OAuth subscription token. This package identifies as the public Codex CLI (`originator: codex_cli_rs`) because that backend only serves that client. A host operating prompt rides as the leading `developer` message via `wrapCodexBridgeMessage`; there is no `instructions` field.
 
-## Design notes
+## Contributing
 
-- Codex has no separate API-key credential path — only the ChatGPT OAuth
-  subscription token is supported.
-- A host's own operating prompt rides as the leading `developer` message
-  via `wrapCodexBridgeMessage`. This package does not send an
-  `instructions` field.
-- `CodexQuirks` (`productName`, `environmentTagName`) has no default: there
-  is no honest generic product name, so an absent quirks bag is a
-  validation error, not a silently-generic adapter.
-- `createCodexResponsesAdapter` is a plain `(source, quirks?)`
-  `AdapterFactory`, loadable from an `AdapterManifest` entry like any other
-  provider.
-- `withCodexContentTypeRepair` exists because the backend omits
-  `content-type` on some streamed responses despite a valid SSE body; it
-  restores the header from the request's own `accept` commitment rather
-  than guessing.
-- Requests identify as the public Codex CLI (`originator: codex_cli_rs`,
-  the CLI's own OAuth client id) because the ChatGPT backend only serves
-  that client; the ChatGPT subscription token from that login is the only
-  credential this package uses, and OpenAI closing that door is an outage
-  this package cannot route around, not a bug in it.
+```sh
+bun install
+bun run typecheck
+bun run lint
+bun run format:check
+bun run test
+bun run check
+```
 
-## Not supported
-
-- No API-key credential path — Codex has none.
-- No live model catalog (`GET /codex/models`) — a host that needs one fetches
-  it itself.
-- No usage/quota or rate-limit surfaces — out of scope for an inference
-  provider adapter.
-- No login flow orchestration or token storage — call `@corbits/oauth-core`
-  directly with `codexOAuthConfig`.
+`bun run format` rewrites the tree. `bun run check` is typecheck + lint + format:check + test.
 
 ## License
 
