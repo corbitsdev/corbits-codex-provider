@@ -25,14 +25,14 @@ withCodexContentTypeRepair(fetch)   ← host-applied fetch decorator
 
 ## Composition
 
-| Concern | Owner |
-| --- | --- |
-| Login loop, callback server, credential store | Host via `@corbits/oauth-core` |
-| OAuth client config and Codex token mapping | This package |
-| Responses parse, SSE, replay | `@corbits/openai-responses` |
-| Codex wire shape (path, headers, store, tools, max tokens) | This package, baked at adapter construction |
-| Host product identity in the operating prompt | `CodexQuirks` → `wrapCodexBridgeMessage` |
-| Missing `Content-Type` on some streams | `withCodexContentTypeRepair` (host wraps `fetch`) |
+| Concern                                                    | Owner                                             |
+| ---------------------------------------------------------- | ------------------------------------------------- |
+| Login loop, callback server, credential store              | Host via `@corbits/oauth-core`                    |
+| OAuth client config and Codex token mapping                | This package                                      |
+| Responses parse, SSE, replay                               | `@corbits/openai-responses`                       |
+| Codex wire shape (path, headers, store, tools, max tokens) | This package, baked at adapter construction       |
+| Host product identity in the operating prompt              | `CodexQuirks` → `wrapCodexBridgeMessage`          |
+| Missing `Content-Type` on some streams                     | `withCodexContentTypeRepair` (host wraps `fetch`) |
 
 ## Provider id
 
