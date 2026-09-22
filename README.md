@@ -1,6 +1,6 @@
 # @corbits/codex-provider
 
-OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth constants and token mapping for `@corbits/oauth-core`, and a Responses adapter for Codex's ChatGPT backend over `@corbits/openai-responses`. It does not run login, store tokens, or report usage — the host composes those from `@corbits/oauth-core`.
+OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth constants and token mapping for `@corbits/oauth-core`, and a Responses adapter for Codex's ChatGPT backend over `@corbits/openai-responses`. Login, token storage, and usage reporting compose in the host from `@corbits/oauth-core`.
 
 ## Runtime support
 
