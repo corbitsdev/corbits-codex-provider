@@ -15,7 +15,47 @@ yarn add @corbits/codex-provider
 bun add @corbits/codex-provider
 ```
 
-Register the adapter under the host's provider id. `CodexQuirks` (`productName`, `environmentTagName`) has no default — an absent bag is a validation error. The ChatGPT backend omits `content-type` on some streamed responses; wrap the host `fetch` with `withCodexContentTypeRepair` so the harness sees SSE.
+### Register the OAuth login
+
+A host mounts "Continue with Codex" through `@corbits/oauth-core/hub`'s `mountOAuthLogin`, which takes a map of `OAuthLoginProviders`. This package supplies one entry for that map — it never runs its own callback server, token store, or refresh loop; `oauth-core` owns all of that.
+
+```ts
+import type { OAuthLoginProviders } from "@corbits/oauth-core/hub";
+import {
+  CODEX_PROVIDER,
+  codexOAuthConfig,
+  exchangeCodexCode,
+  refreshCodexTokens,
+} from "@corbits/codex-provider";
+
+const providers: OAuthLoginProviders = {
+  [CODEX_PROVIDER]: {
+    oauthConfig: codexOAuthConfig,
+    exchange: (code, verifier, now) => exchangeCodexCode(code, verifier, now),
+    // `refresh` only ever receives the stored refresh secret, so the prior
+    // tokens passed here supply just that; refreshCodexTokens carries the
+    // account id forward from a caller-supplied `previous` only when the
+    // refresh response itself omits `id_token`, which it usually does.
+    refresh: (refreshSecret, now) =>
+      refreshCodexTokens(refreshSecret, now, {
+        access: "",
+        refresh: refreshSecret,
+      }),
+    // The Codex backend rejects inference without this header value.
+    metadata: (tokens) =>
+      "accountId" in tokens && typeof tokens.accountId === "string"
+        ? { accountId: tokens.accountId }
+        : {},
+  },
+  // ...the host's other providers, each contributing one entry the same way.
+};
+```
+
+Pass `providers` as-is to `mountOAuthLogin` (login route) and to `createOAuthTokenRefresher` (background renewal ahead of expiry) — both live on `@corbits/oauth-core/hub` and own the database, the cipher, and the grant check.
+
+### Register the inference adapter
+
+`CodexQuirks` (`productName`, `environmentTagName`) has no default — an absent bag is a validation error. The ChatGPT backend omits `content-type` on some streamed responses; wrap the host `fetch` with `withCodexContentTypeRepair` so the harness sees SSE.
 
 ```ts
 import type { AdapterManifest } from "@intx/inference";
@@ -51,7 +91,7 @@ export const adapter = createCodexResponsesAdapter(source, {
 export const hostFetch = withCodexContentTypeRepair(globalThis.fetch);
 ```
 
-`codexOAuthConfig`, `exchangeCodexCode`, and `refreshCodexTokens` plug into `@corbits/oauth-core`'s `buildAuthorizeUrl`, `exchangeCode`, and `refreshTokenRequest`. The host's catalog record points at `CODEX_BASE_URL` with the subscription access token.
+The host's catalog record for a Codex credential points at `CODEX_BASE_URL` with the subscription access token that OAuth login produced.
 
 ## How it works
 
