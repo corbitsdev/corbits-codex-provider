@@ -27,7 +27,7 @@
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {
-    "@corbits/oauth-core": "github:corbitsdev/corbits-oauth-core",
+    "@corbits/oauth-core": "github:corbitsdev/corbits-oauth-core#3028f8604155eee63f5a1711f0d4022d7984e3f7",
     "@corbits/openai-responses": "github:corbitsdev/corbits-openai-responses",
     "arktype": "2.2.3"
   },
