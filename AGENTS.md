@@ -19,10 +19,10 @@ than reimplementing OAuth or the Responses wire protocol.
 
 ## Rules
 
-- Consume `@corbits/oauth-core` and `@corbits/openai-responses` as packages
-  (npm semver ranges) only — never vendor or fork them. `@intx/inference` and
-  `@intx/types` are peer dependencies: an adapter must plug into the host's
-  own copy of the harness, not a second bundled one.
+- `@corbits/oauth-core`, `@corbits/openai-responses`, `@intx/inference`,
+  and `@intx/types` are peer dependencies (npm semver ranges) — never vendor
+  or fork them. An adapter must plug into the host's own copies of the
+  harness and its sibling packages, not second bundled ones.
 - Parse every trust boundary with arktype (`CodexQuirks`, id_token claims);
   never `as T` untrusted input.
 - `exactOptionalPropertyTypes` is on: omit optional keys, never assign
@@ -58,11 +58,10 @@ across that boundary.
 
 ## Distribution
 
-The package ships compiled output: `bun run build` emits `dist/` (plus
-`dist/*.d.ts`) via `tsconfig.build.json`, and `prepack` rebuilds it on every
-pack. `exports` keeps an `intx-src` condition pointing at `src/index.ts` for
-Bun-based Interchange hosts that consume TypeScript source directly, while
-`types`/`default` serve the compiled `dist` output to every other runtime —
-native Node >= 24 loads `dist` as-is. Only `dist` ships (`files` is
-dist-only); consumers install it from npm with `bun add
-@corbits/codex-provider`.
+The package ships compiled `dist/` on npm as `@corbits/codex-provider`:
+`exports` points at `dist/index.js` (types at `dist/index.d.ts`), built with
+`bun run build` (`tsc -p tsconfig.build.json`) via the `prepack` hook.
+Consumers install the published package (`bun add @corbits/codex-provider`
+or `npm install @corbits/codex-provider`) on Bun >= 1.2 or Node.js >= 24,
+both of which load the compiled output. Only `dist` ships (`files` is
+dist-only).

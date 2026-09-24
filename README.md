@@ -4,7 +4,9 @@ OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth 
 
 ## Runtime support
 
-Bun >= 1.2 consumes this package's TypeScript source directly via the `intx-src` export condition. Node >= 24 loads the compiled `dist` output. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
+Bun >= 1.2 and Node >= 24 consume the published compiled `dist/` output.
+`@corbits/oauth-core`, `@corbits/openai-responses`, `@intx/inference`, and
+`@intx/types` are peer dependencies and must resolve to the host's own copies.
 
 ## Quickstart
 

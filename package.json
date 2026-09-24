@@ -5,6 +5,8 @@
   "license": "LGPL-2.1-only",
   "author": "Sawyer Cutler <sawyer@dirtroad.dev>",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist",
@@ -16,7 +18,6 @@
   },
   "exports": {
     ".": {
-      "intx-src": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
@@ -32,15 +33,17 @@
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {
-    "@corbits/oauth-core": "^0.1.0",
-    "@corbits/openai-responses": "^0.1.0",
-    "arktype": "2.2.3"
+    "arktype": "^2.2.3"
   },
   "peerDependencies": {
+    "@corbits/oauth-core": "^0.1.0",
+    "@corbits/openai-responses": "^0.1.0",
     "@intx/inference": ">=0.4.0",
     "@intx/types": ">=0.4.0"
   },
   "devDependencies": {
+    "@corbits/oauth-core": "^0.1.0",
+    "@corbits/openai-responses": "^0.1.0",
     "@eslint/js": "9.34.0",
     "@intx/inference": "0.4.0",
     "@intx/types": "0.4.0",
