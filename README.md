@@ -4,7 +4,7 @@ OpenAI Codex ("Login with ChatGPT") as an Interchange inference provider: OAuth 
 
 ## Runtime support
 
-Bun >= 1.2 runs the published TypeScript source. Node >= 24 is an engines floor for tooling; native Node does not load this extensionless TypeScript source as-is. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
+Bun >= 1.2 consumes this package's TypeScript source directly via the `intx-src` export condition. Node >= 24 loads the compiled `dist` output. `@intx/inference` and `@intx/types` are peer dependencies and must resolve to the host's own copy.
 
 ## Quickstart
 

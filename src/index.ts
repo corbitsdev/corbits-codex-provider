@@ -7,7 +7,7 @@
  * and product identity via `CodexQuirks`.
  */
 
-export * from "./constants";
+export * from "./constants.js";
 
 export {
   accountIdFromIdToken,
@@ -16,15 +16,15 @@ export {
   exchangeCodexCode,
   refreshCodexTokens,
   type CodexTokens,
-} from "./oauth";
+} from "./oauth.js";
 
-export { wrapCodexBridgeMessage } from "./instructions";
+export { wrapCodexBridgeMessage } from "./instructions.js";
 
-export { CodexQuirks, CodexQuirksError, parseCodexQuirks } from "./quirks";
+export { CodexQuirks, CodexQuirksError, parseCodexQuirks } from "./quirks.js";
 
-export { createCodexResponsesAdapter } from "./responses-adapter";
+export { createCodexResponsesAdapter } from "./responses-adapter.js";
 
 export {
   withCodexContentTypeRepair,
   type FetchLike,
-} from "./content-type-repair";
+} from "./content-type-repair.js";

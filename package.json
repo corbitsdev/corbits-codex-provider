@@ -7,8 +7,7 @@
   "type": "module",
   "sideEffects": false,
   "files": [
-    "src",
-    "!src/**/*.test.ts",
+    "dist",
     "README.md",
     "LICENSE"
   ],
@@ -16,9 +15,15 @@
     "access": "public"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "intx-src": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "bun run build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -27,8 +32,8 @@
     "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
   },
   "dependencies": {
-    "@corbits/oauth-core": "github:corbitsdev/corbits-oauth-core#3028f8604155eee63f5a1711f0d4022d7984e3f7",
-    "@corbits/openai-responses": "github:corbitsdev/corbits-openai-responses",
+    "@corbits/oauth-core": "^0.1.0",
+    "@corbits/openai-responses": "^0.1.0",
     "arktype": "2.2.3"
   },
   "peerDependencies": {

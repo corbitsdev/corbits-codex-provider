@@ -1,4 +1,4 @@
-import { CODEX_RESPONSES_PATH } from "./constants";
+import { CODEX_RESPONSES_PATH } from "./constants.js";
 
 /** The `fetch` shape {@link withCodexContentTypeRepair} wraps. */
 export type FetchLike = (
