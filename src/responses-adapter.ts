@@ -10,9 +10,9 @@ import {
   CODEX_REASONING_EFFORT_OPTION,
   CODEX_RESPONSES_PATH,
   CODEX_SESSION_ID_OPTION,
-} from "./constants";
-import { wrapCodexBridgeMessage } from "./instructions";
-import { parseCodexQuirks, type CodexQuirks } from "./quirks";
+} from "./constants.js";
+import { wrapCodexBridgeMessage } from "./instructions.js";
+import { parseCodexQuirks, type CodexQuirks } from "./quirks.js";
 
 // `store` and `parallelToolCalls` need an explicit `false` on the wire, and
 // `maxOutputTokens: false` because the backend 400s on `max_output_tokens`.

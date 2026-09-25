@@ -1,7 +1,7 @@
 import type { ConversationTurn, LastCycleSource } from "@intx/types/runtime";
 import { type } from "arktype";
 import { describe, expect, test } from "bun:test";
-import { createCodexResponsesAdapter } from "./index";
+import { createCodexResponsesAdapter } from "./index.js";
 
 const source: LastCycleSource = {
   sourceId: "test/codex",

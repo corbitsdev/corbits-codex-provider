@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { wrapCodexBridgeMessage } from "./index";
+import { wrapCodexBridgeMessage } from "./index.js";
 
 // The Codex backend addresses this text as a leading developer message and
 // the host's harness relies on the exact tag structure to identify its own

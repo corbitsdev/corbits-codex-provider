@@ -16,7 +16,7 @@ import {
   CODEX_SCOPES,
   CODEX_TOKEN_TIMEOUT_MS,
   CODEX_TOKEN_URL,
-} from "./constants";
+} from "./constants.js";
 
 /** Tokens issued by Codex's OAuth server: the shared base shape plus the ChatGPT account id. */
 export type CodexTokens = BaseTokens & { accountId?: string };

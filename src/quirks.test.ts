@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseCodexQuirks } from "./index";
+import { parseCodexQuirks } from "./index.js";
 
 // `CodexQuirks` is annotated `Type<CodexQuirksShape>` (see quirks.ts for
 // why), which hides the schema's `"+": "reject"` at the type level — only a

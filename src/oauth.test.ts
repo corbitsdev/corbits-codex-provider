@@ -4,7 +4,7 @@ import {
   accountIdFromIdToken,
   refreshCodexTokens,
   type CodexTokens,
-} from "./index";
+} from "./index.js";
 
 function jwtWithPayload(payload: unknown): string {
   const header = Buffer.from(JSON.stringify({ alg: "none" })).toString(

@@ -3,7 +3,7 @@ import {
   withCodexContentTypeRepair,
   CODEX_RESPONSES_PATH,
   type FetchLike,
-} from "./index";
+} from "./index.js";
 
 const url = `https://chatgpt.com/backend-api${CODEX_RESPONSES_PATH}`;
 

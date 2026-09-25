@@ -19,10 +19,10 @@ than reimplementing OAuth or the Responses wire protocol.
 
 ## Rules
 
-- Consume `@corbits/oauth-core` and `@corbits/openai-responses` as packages
-  (`github:` specifiers) only — never vendor or fork them. `@intx/inference` and
-  `@intx/types` are peer dependencies: an adapter must plug into the host's
-  own copy of the harness, not a second bundled one.
+- `@corbits/oauth-core`, `@corbits/openai-responses`, `@intx/inference`,
+  and `@intx/types` are peer dependencies (npm semver ranges) — never vendor
+  or fork them. An adapter must plug into the host's own copies of the
+  harness and its sibling packages, not second bundled ones.
 - Parse every trust boundary with arktype (`CodexQuirks`, id_token claims);
   never `as T` untrusted input.
 - `exactOptionalPropertyTypes` is on: omit optional keys, never assign
@@ -31,6 +31,9 @@ than reimplementing OAuth or the Responses wire protocol.
   `bun link` symlinks — it would not resolve for anyone else.
 - No product strings baked in; `CodexQuirks` is the only injection point for
   a host's identity, and an absent bag is a validation error, not a default.
+- Relative imports inside `src/` carry explicit `.js` suffixes so the
+  compiled `dist/` output resolves under native Node ESM. Never add a
+  build-time rewrite script to paper over an extensionless import.
 - Tests exist only for load-bearing risk: the exact Codex request shape,
   `accountIdFromIdToken` on hostile input, the bridge-message tag structure,
   and the content-type repair's conditions.
@@ -39,13 +42,14 @@ than reimplementing OAuth or the Responses wire protocol.
 
 ```sh
 bun install
+bun run build    # tsc -p tsconfig.build.json -> dist/
 bun run check    # typecheck + lint + format:check + test
 ```
 
-`@corbits/oauth-core` and `@corbits/openai-responses` resolve from their
-GitHub repos, so `bun install` needs those repos pushed. To work against an
-unpushed local checkout of either, `bun link` it here; a later `bun install`
-re-resolves from git and drops the link.
+`@corbits/oauth-core` and `@corbits/openai-responses` resolve from npm, so
+`bun install` needs no git access. To work against an unpushed local checkout
+of either, `bun link` it here; a later `bun install` re-resolves from the
+registry and drops the link.
 
 `CodexQuirks` in `src/quirks.ts` is explicitly typed as `Type<CodexQuirksShape>`
 rather than left to inference: a consumer can end up with two resolved
@@ -54,6 +58,10 @@ across that boundary.
 
 ## Distribution
 
-The package ships TypeScript source: `exports` points at `src/index.ts`,
-there is no build step and no `dist/`. Consumers install it from npm with
-`bun add @corbits/codex-provider` and Bun runs the source as-is.
+The package ships compiled `dist/` on npm as `@corbits/codex-provider`:
+`exports` points at `dist/index.js` (types at `dist/index.d.ts`), built with
+`bun run build` (`tsc -p tsconfig.build.json`) via the `prepack` hook.
+Consumers install the published package (`bun add @corbits/codex-provider`
+or `npm install @corbits/codex-provider`) on Bun >= 1.2 or Node.js >= 24,
+both of which load the compiled output. Only `dist` ships (`files` is
+dist-only).
