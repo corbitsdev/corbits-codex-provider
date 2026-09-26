@@ -16,13 +16,16 @@ than reimplementing OAuth or the Responses wire protocol.
 - `src/responses-adapter.ts` — `createCodexResponsesAdapter`, a plain `(source, quirks?)` `AdapterFactory`.
 - `src/content-type-repair.ts` — `withCodexContentTypeRepair`, a fetch decorator for a backend content-type bug.
 - `src/index.ts` — the public surface; nothing else is imported by consumers.
+- `src/*.test.ts` — unit tests, excluded from the build.
+- `e2e/live.test.ts` — the opt-in live suite (`CODEX_LIVE_ACCESS_TOKEN`).
 
 ## Rules
 
 - `@corbits/oauth-core`, `@corbits/openai-responses`, `@intx/inference`,
-  and `@intx/types` are peer dependencies (npm semver ranges) — never vendor
-  or fork them. An adapter must plug into the host's own copies of the
-  harness and its sibling packages, not second bundled ones.
+  and `@intx/types` are peer dependencies (`^0.1.0` and `^0.4.0`, pinned
+  exactly in `devDependencies`) — never vendor or fork them. An adapter
+  must plug into the host's own copies of the harness and its sibling
+  packages, not second bundled ones.
 - Parse every trust boundary with arktype (`CodexQuirks`, id_token claims);
   never `as T` untrusted input.
 - `exactOptionalPropertyTypes` is on: omit optional keys, never assign
@@ -41,9 +44,7 @@ than reimplementing OAuth or the Responses wire protocol.
 ## Local development
 
 ```sh
-bun install
-bun run build    # tsc -p tsconfig.build.json -> dist/
-bun run check    # typecheck + lint + format:check + test
+bun install && bun run check
 ```
 
 `@corbits/oauth-core` and `@corbits/openai-responses` resolve from npm, so
@@ -55,13 +56,3 @@ registry and drops the link.
 rather than left to inference: a consumer can end up with two resolved
 copies of `arktype` on disk, and TypeScript cannot name the inferred type
 across that boundary.
-
-## Distribution
-
-The package ships compiled `dist/` on npm as `@corbits/codex-provider`:
-`exports` points at `dist/index.js` (types at `dist/index.d.ts`), built with
-`bun run build` (`tsc -p tsconfig.build.json`) via the `prepack` hook.
-Consumers install the published package (`bun add @corbits/codex-provider`
-or `npm install @corbits/codex-provider`) on Bun >= 1.2 or Node.js >= 24,
-both of which load the compiled output. Only `dist` ships (`files` is
-dist-only).
