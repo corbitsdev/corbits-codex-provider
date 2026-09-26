@@ -29,8 +29,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "bun test",
-    "check": "bun run typecheck && bun run lint && bun run format:check && bun run test"
+    "test": "bun test src",
+    "check": "bun run typecheck && bun run lint && bun run format:check && bun run test",
+    "test:e2e": "bun test e2e"
   },
   "dependencies": {
     "arktype": "^2.2.3"
