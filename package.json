@@ -2,25 +2,33 @@
   "name": "@corbits/codex-provider",
   "version": "0.1.0",
   "description": "OpenAI Codex (Login with ChatGPT) as an Interchange inference provider, with OAuth token exchange, a Responses-protocol adapter, and a content-type repair for the ChatGPT backend.",
+  "homepage": "https://github.com/corbitsdev/corbits-codex-provider",
+  "bugs": {
+    "url": "https://github.com/corbitsdev/corbits-codex-provider/issues"
+  },
   "license": "LGPL-2.1-only",
   "author": "Sawyer Cutler <sawyer@dirtroad.dev>",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/corbitsdev/corbits-codex-provider.git"
+  },
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -36,12 +44,6 @@
   "dependencies": {
     "arktype": "^2.2.3"
   },
-  "peerDependencies": {
-    "@corbits/oauth-core": "^0.1.0",
-    "@corbits/openai-responses": "^0.1.0",
-    "@intx/inference": "^0.4.0",
-    "@intx/types": "^0.4.0"
-  },
   "devDependencies": {
     "@corbits/oauth-core": "0.1.0",
     "@corbits/openai-responses": "0.1.0",
@@ -52,16 +54,14 @@
     "oxlint": "1.85.0",
     "typescript": "6.0.3"
   },
+  "peerDependencies": {
+    "@corbits/oauth-core": "^0.1.0",
+    "@corbits/openai-responses": "^0.1.0",
+    "@intx/inference": "^0.4.0",
+    "@intx/types": "^0.4.0"
+  },
   "engines": {
     "bun": ">=1.2.0",
     "node": ">=24"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/corbitsdev/corbits-codex-provider.git"
-  },
-  "homepage": "https://github.com/corbitsdev/corbits-codex-provider",
-  "bugs": {
-    "url": "https://github.com/corbitsdev/corbits-codex-provider/issues"
   }
 }
