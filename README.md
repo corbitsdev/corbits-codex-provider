@@ -34,15 +34,7 @@ const providers: OAuthLoginProviders = {
   [CODEX_PROVIDER]: {
     oauthConfig: codexOAuthConfig,
     exchange: (code, verifier, now) => exchangeCodexCode(code, verifier, now),
-    // `refresh` only ever receives the stored refresh secret, so the prior
-    // tokens passed here supply just that; refreshCodexTokens carries the
-    // account id forward from a caller-supplied `previous` only when the
-    // refresh response itself omits `id_token`, which it usually does.
-    refresh: (refreshSecret, now) =>
-      refreshCodexTokens(refreshSecret, now, {
-        access: "",
-        refresh: refreshSecret,
-      }),
+    refresh: (refreshSecret, now) => refreshCodexTokens(refreshSecret, now),
     // The Codex backend rejects inference without this header value.
     metadata: (tokens) =>
       "accountId" in tokens && typeof tokens.accountId === "string"

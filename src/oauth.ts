@@ -104,13 +104,14 @@ export async function exchangeCodexCode(
  * Refreshes a Codex access token, carrying the prior refresh token forward
  * when the response omits it. A refresh response frequently omits
  * `id_token` entirely, which would otherwise drop `chatgpt-account-id` from
- * every request after the first refresh — the caller's `previous` tokens
- * supply the account id to carry forward in that case.
+ * every request after the first refresh. Pass the caller's `previous` tokens
+ * to carry their account id forward in that case; without them, the caller
+ * keeps the account id some other way (for example, in credential metadata).
  */
 export async function refreshCodexTokens(
   refreshToken: string,
   now: number,
-  previous: CodexTokens,
+  previous?: CodexTokens,
   fetchImpl: FetchLike = fetch,
 ): Promise<CodexTokens> {
   const refreshed = codexTokensFromResponse(
@@ -120,7 +121,7 @@ export async function refreshCodexTokens(
   );
   return {
     ...refreshed,
-    ...(refreshed.accountId === undefined && previous.accountId !== undefined
+    ...(refreshed.accountId === undefined && previous?.accountId !== undefined
       ? { accountId: previous.accountId }
       : {}),
   };
