@@ -55,4 +55,15 @@ describe("Codex oauth — refresh account id continuity", () => {
     );
     expect(refreshed.accountId).toBe("acct-1");
   });
+
+  test("keeps the refresh token and leaves the account id unset without previous tokens", async () => {
+    const refreshed = await refreshCodexTokens(
+      "refresh-1",
+      0,
+      undefined,
+      fetchResolving({ access_token: "new" }),
+    );
+    expect(refreshed.refresh).toBe("refresh-1");
+    expect(refreshed.accountId).toBeUndefined();
+  });
 });
