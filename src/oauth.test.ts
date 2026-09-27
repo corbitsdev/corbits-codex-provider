@@ -35,6 +35,22 @@ describe("Codex oauth — account id decoding", () => {
       accountIdFromIdToken(jwtWithPayload({ sub: "user-1" })),
     ).toBeUndefined();
   });
+
+  test("treats a claim carrying CR, LF or NUL as absent", () => {
+    for (const bad of ["acc\r\nx-evil: 1", "acc\nx", "acc\u0000x"]) {
+      expect(
+        accountIdFromIdToken(jwtWithPayload({ chatgpt_account_id: bad })),
+      ).toBeUndefined();
+    }
+    expect(
+      accountIdFromIdToken(
+        jwtWithPayload({
+          chatgpt_account_id: "top\r\n",
+          "https://api.openai.com/auth": { chatgpt_account_id: "nested" },
+        }),
+      ),
+    ).toBe("nested");
+  });
 });
 
 // A refresh response frequently omits id_token entirely; without carrying
