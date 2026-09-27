@@ -23,8 +23,8 @@
       "peerDependencies": {
         "@corbits/oauth-core": "^0.1.0",
         "@corbits/openai-responses": "^0.1.0",
-        "@intx/inference": ">=0.4.0",
-        "@intx/types": ">=0.4.0",
+        "@intx/inference": "^0.4.0",
+        "@intx/types": "^0.4.0",
       },
     },
   },
