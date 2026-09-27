@@ -68,4 +68,29 @@ describe("Codex content-type repair — missing content-type on 2xx SSE response
     );
     expect(otherUrlResponse.headers.get("content-type")).toBeNull();
   });
+
+  test("repairs when the URL carries a query string", async () => {
+    const repaired = withCodexContentTypeRepair(
+      fetchReturning(new Response("data: {}\n\n", { status: 200 })),
+    );
+    const response = await repaired(`${url}?client=x`, {
+      headers: { accept: "text/event-stream" },
+    });
+    expect(response.headers.get("content-type")).toBe("text/event-stream");
+  });
+
+  test("treats an empty content-type as missing", async () => {
+    const repaired = withCodexContentTypeRepair(
+      fetchReturning(
+        new Response("data: {}\n\n", {
+          status: 200,
+          headers: { "content-type": "" },
+        }),
+      ),
+    );
+    const response = await repaired(url, {
+      headers: { accept: "text/event-stream" },
+    });
+    expect(response.headers.get("content-type")).toBe("text/event-stream");
+  });
 });

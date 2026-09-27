@@ -54,9 +54,10 @@ function acceptedContentType(
 export function withCodexContentTypeRepair(fetchImpl: FetchLike): FetchLike {
   return async (input, init) => {
     const response = await fetchImpl(input, init);
-    if (!requestURL(input).endsWith(CODEX_RESPONSES_PATH)) return response;
+    if (!new URL(requestURL(input)).pathname.endsWith(CODEX_RESPONSES_PATH))
+      return response;
     if (!response.ok) return response;
-    if (response.headers.get("content-type") !== null) return response;
+    if (response.headers.get("content-type")) return response;
     const declared = acceptedContentType(input, init);
     if (declared === null) return response;
     const headers = new Headers(response.headers);

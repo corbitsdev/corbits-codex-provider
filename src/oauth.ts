@@ -43,6 +43,12 @@ const IdTokenClaims = type({
   },
 });
 
+// The claim becomes a request header value; CR, LF or NUL would split or
+// truncate it, so such a claim is treated as absent.
+function headerSafe(value: string | undefined): string | undefined {
+  return value === undefined || /[\r\n\0]/.test(value) ? undefined : value;
+}
+
 /**
  * Decodes the ChatGPT account id out of an `id_token` (a JWT). The claim
  * lives at `chatgpt_account_id` or nested under the
@@ -68,8 +74,8 @@ export function accountIdFromIdToken(
   const parsed = IdTokenClaims(claims);
   if (parsed instanceof type.errors) return undefined;
   return (
-    parsed.chatgpt_account_id ??
-    parsed["https://api.openai.com/auth"]?.chatgpt_account_id
+    headerSafe(parsed.chatgpt_account_id) ??
+    headerSafe(parsed["https://api.openai.com/auth"]?.chatgpt_account_id)
   );
 }
 
