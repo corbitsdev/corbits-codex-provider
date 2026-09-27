@@ -54,8 +54,8 @@ function acceptedContentType(
 export function withCodexContentTypeRepair(fetchImpl: FetchLike): FetchLike {
   return async (input, init) => {
     const response = await fetchImpl(input, init);
-    if (!new URL(requestURL(input)).pathname.endsWith(CODEX_RESPONSES_PATH))
-      return response;
+    const { pathname } = new URL(requestURL(input), "http://localhost");
+    if (!pathname.endsWith(CODEX_RESPONSES_PATH)) return response;
     if (!response.ok) return response;
     if (response.headers.get("content-type")) return response;
     const declared = acceptedContentType(input, init);
