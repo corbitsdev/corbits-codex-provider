@@ -104,6 +104,7 @@ process.stdout.write("\n");
 | `CodexTokens`, `FetchLike`                                 | Types.                                                                                                               |
 | `CODEX_PROVIDER`                                           | The `"codex"` provider id.                                                                                           |
 | `CODEX_BASE_URL`, `CODEX_RESPONSES_PATH`                   | `https://chatgpt.com/backend-api` and `/codex/responses`.                                                            |
+| `CODEX_DEFAULT_MODELS`                                     | The models a ChatGPT login serves, from the Codex CLI's bundled catalog.                                             |
 | `CODEX_ACCOUNT_ID_OPTION`                                  | `providerOptions` key sent as the `chatgpt-account-id` header.                                                       |
 | `CODEX_SESSION_ID_OPTION`                                  | `providerOptions` key sent as `prompt_cache_key` and the `session_id` header.                                        |
 | `CODEX_REASONING_EFFORT_OPTION`                            | `providerOptions` key sent as `reasoning.effort`; `"none"` omits it.                                                 |
