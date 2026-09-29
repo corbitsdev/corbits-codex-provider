@@ -62,6 +62,20 @@ export const CODEX_AUTHORIZE_EXTRA_PARAMS: Record<string, string> = {
 export const CODEX_BASE_URL = "https://chatgpt.com/backend-api";
 export const CODEX_RESPONSES_PATH = "/codex/responses";
 
+// The models the Codex CLI's bundled catalog lists in its picker
+// (openai/codex@b1e72963c3, codex-rs/models-manager/models.json, visibility
+// "list"), by priority.
+export const CODEX_DEFAULT_MODELS = [
+  "gpt-6.1-sol",
+  "gpt-6-astra",
+  "gpt-6-sol",
+  "gpt-6-luna",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
+  "gpt-5.5",
+] as const;
+
 // Refresh a token this many milliseconds before its stated expiry so a
 // request is never sent with a token about to lapse mid-flight.
 export const CODEX_REFRESH_SKEW_MS = 60_000;
