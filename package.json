@@ -52,7 +52,7 @@
     "arktype": "^2.2.3"
   },
   "devDependencies": {
-    "@corbits/oauth-core": "0.2.0",
+    "@corbits/oauth-core": "0.3.0",
     "@corbits/openai-responses": "0.2.0",
     "@intx/inference": "0.4.0",
     "@intx/types": "0.4.0",
@@ -62,7 +62,7 @@
     "typescript": "6.0.3"
   },
   "peerDependencies": {
-    "@corbits/oauth-core": "^0.2.0",
+    "@corbits/oauth-core": "^0.3.0",
     "@corbits/openai-responses": "^0.2.0",
     "@intx/inference": "^0.4.0",
     "@intx/types": "^0.4.0"
