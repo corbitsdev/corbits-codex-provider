@@ -56,3 +56,10 @@ registry and drops the link.
 rather than left to inference: a consumer can end up with two resolved
 copies of `arktype` on disk, and TypeScript cannot name the inferred type
 across that boundary.
+
+## Conventions
+
+- Read `README.md` before changing public behavior.
+- Keep changes focused; update docs and tests alongside code changes.
+- Run `bun run check` (typecheck, lint, format, tests) before declaring work complete.
+
