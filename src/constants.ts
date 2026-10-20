@@ -66,6 +66,7 @@ export const CODEX_RESPONSES_PATH = "/codex/responses";
 // (openai/codex@b1e72963c3, codex-rs/models-manager/models.json, visibility
 // "list"), by priority.
 export const CODEX_DEFAULT_MODELS = [
+  "gpt-6.1",
   "gpt-6.1-sol",
   "gpt-6-astra",
   "gpt-6-sol",
