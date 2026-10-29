@@ -107,7 +107,7 @@ process.stdout.write("\n");
 | `CODEX_DEFAULT_MODELS`                                     | The models the Codex CLI's bundled catalog lists in its picker.                                                      |
 | `CODEX_ACCOUNT_ID_OPTION`                                  | `providerOptions` key sent as the `chatgpt-account-id` header.                                                       |
 | `CODEX_SESSION_ID_OPTION`                                  | `providerOptions` key sent as `prompt_cache_key` and the `session_id` header.                                        |
-| `CODEX_REASONING_EFFORT_OPTION`                            | `providerOptions` key sent as `reasoning.effort`; `"none"` omits it.                                                 |
+| `CODEX_REASONING_EFFORT_OPTION`                            | `providerOptions` key sent as `reasoning.effort`; `"none"` omits it. Wins over the neutral `effort`.                 |
 | `CODEX_REFRESH_SKEW_MS`                                    | Refresh this long before expiry.                                                                                     |
 
 The OAuth constants behind `codexOAuthConfig` (`CODEX_CLIENT_ID`, `CODEX_AUTHORIZE_URL`, `CODEX_TOKEN_URL`, `CODEX_REDIRECT_URI`, `CODEX_SCOPES`, `CODEX_AUTHORIZE_EXTRA_PARAMS`, `CODEX_ORIGINATOR`, `CODEX_TOKEN_TIMEOUT_MS`) are exported too.
@@ -160,6 +160,8 @@ export const deps = {
 ```
 
 Each Codex source points at `CODEX_BASE_URL`, uses the OAuth access token as its credential, and carries `quirks: { productName, environmentTagName }` naming the host. Put the credential's `accountId` metadata in the source's quirks as `accountId`; it is sent as `chatgpt-account-id`, and a per-call `providerOptions[CODEX_ACCOUNT_ID_OPTION]` overrides it. The quirk binds the source to one ChatGPT account, so each account's credential needs its own source, and the quirk is re-set when the credential is signed in to another account.
+
+Interchange's neutral `effort` is sent as `reasoning.effort`: `low`, `medium` and `high` as given, and `max` as the highest level up to `max` that the model lists in the Codex CLI catalog (`max`, or `xhigh` on `gpt-5.5`), or `high` for a model the catalog does not list.
 
 ## License
 
