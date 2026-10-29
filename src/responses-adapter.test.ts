@@ -129,3 +129,39 @@ describe("Codex responses adapter — request shape", () => {
     });
   });
 });
+
+describe("Codex responses adapter — neutral effort", () => {
+  const adapter = createCodexResponsesAdapter(source, quirks);
+  const effortOf = (
+    model: string,
+    options: Parameters<typeof adapter.buildRequest>[2],
+  ) =>
+    parseCodexBody(adapter.buildRequest(turns, model, options).body).reasoning;
+
+  test("max is the model's highest listed level, else high", () => {
+    expect(effortOf("gpt-6-sol", { effort: "max" })).toEqual({ effort: "max" });
+    expect(effortOf("gpt-5.5", { effort: "max" })).toEqual({ effort: "xhigh" });
+    expect(effortOf("unlisted", { effort: "max" })).toEqual({ effort: "high" });
+  });
+
+  test("a non-empty explicit effort option wins", () => {
+    expect(
+      effortOf("gpt-5.5", {
+        effort: "high",
+        providerOptions: { codexReasoningEffort: "low" },
+      }),
+    ).toEqual({ effort: "low" });
+    expect(
+      effortOf("gpt-5.5", {
+        effort: "high",
+        providerOptions: { codexReasoningEffort: "none" },
+      }),
+    ).toBeUndefined();
+    expect(
+      effortOf("gpt-5.5", {
+        effort: "high",
+        providerOptions: { codexReasoningEffort: "" },
+      }),
+    ).toEqual({ effort: "high" });
+  });
+});

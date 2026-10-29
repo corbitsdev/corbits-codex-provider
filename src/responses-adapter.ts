@@ -4,6 +4,7 @@ import {
   type ResponsesQuirks,
 } from "@corbits/openai-responses";
 import type { AdapterFactory } from "@intx/inference";
+import type { InferenceEffort, InferenceOptions } from "@intx/types/runtime";
 import {
   CODEX_ACCOUNT_ID_OPTION,
   CODEX_ORIGINATOR,
@@ -55,6 +56,50 @@ function codexResponsesHooks(quirks: CodexQuirks): ResponsesHooks {
   };
 }
 
+// The highest reasoning level each model lists, from the same catalog as
+// `CODEX_DEFAULT_MODELS` (`supported_reasoning_levels`). `ultra` sits above
+// `max` on some models but is not the neutral `max`. A model missing here,
+// including `gpt-6.1`, which that catalog does not list, sends `high`.
+const CODEX_MAX_EFFORT: Readonly<Record<string, "max" | "xhigh">> = {
+  "gpt-6.1-sol": "max",
+  "gpt-6-astra": "max",
+  "gpt-6-sol": "max",
+  "gpt-6-luna": "max",
+  "gpt-5.6-sol": "max",
+  "gpt-5.6-terra": "max",
+  "gpt-5.6-luna": "max",
+  "gpt-5.5": "xhigh",
+};
+
+function codexEffort(
+  model: string,
+  effort: InferenceEffort,
+): InferenceEffort | "xhigh" {
+  return effort === "max" ? (CODEX_MAX_EFFORT[model] ?? "high") : effort;
+}
+
+// Interchange's neutral `effort` becomes the effort option the request
+// builder reads, unless the caller already set that option to a non-empty
+// string, which is the only value the builder sends.
+function withNeutralEffort(
+  model: string,
+  options: InferenceOptions,
+): InferenceOptions {
+  const explicit = options.providerOptions?.[CODEX_REASONING_EFFORT_OPTION];
+  if (
+    options.effort === undefined ||
+    (typeof explicit === "string" && explicit.length > 0)
+  )
+    return options;
+  return {
+    ...options,
+    providerOptions: {
+      ...options.providerOptions,
+      [CODEX_REASONING_EFFORT_OPTION]: codexEffort(model, options.effort),
+    },
+  };
+}
+
 /**
  * `AdapterFactory` for Codex's Responses-speaking ChatGPT backend. `quirks`
  * is this package's own {@link CodexQuirks} (an `InferenceSource.quirks`
@@ -67,8 +112,13 @@ function codexResponsesHooks(quirks: CodexQuirks): ResponsesHooks {
  */
 export const createCodexResponsesAdapter: AdapterFactory = (source, quirks) => {
   const parsed = parseCodexQuirks(quirks);
-  return responsesAdapterFactory(
+  const adapter = responsesAdapterFactory(
     codexResponsesQuirks(parsed),
     codexResponsesHooks(parsed),
   )(source);
+  return {
+    ...adapter,
+    buildRequest: (messages, model, options) =>
+      adapter.buildRequest(messages, model, withNeutralEffort(model, options)),
+  };
 };

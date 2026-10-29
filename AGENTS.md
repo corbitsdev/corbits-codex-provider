@@ -39,7 +39,7 @@ than reimplementing OAuth or the Responses wire protocol.
   build-time rewrite script to paper over an extensionless import.
 - Tests exist only for load-bearing risk: the exact Codex request shape,
   `accountIdFromIdToken` on hostile input, the bridge-message tag structure,
-  and the content-type repair's conditions.
+  the neutral-effort mapping, and the content-type repair's conditions.
 
 ## Local development
 
