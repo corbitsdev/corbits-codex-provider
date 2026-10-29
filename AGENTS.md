@@ -12,7 +12,7 @@ than reimplementing OAuth or the Responses wire protocol.
 - `src/constants.ts` — endpoints, client id, headers, timeouts.
 - `src/oauth.ts` — `codexOAuthConfig`, `accountIdFromIdToken`, token-response mapping.
 - `src/instructions.ts` — the bridge-message wrap for the host's operating prompt.
-- `src/quirks.ts` — `CodexQuirks`, the host-identity bag `wrapCodexBridgeMessage` needs.
+- `src/quirks.ts` — `CodexQuirks`, the host-identity bag `wrapCodexBridgeMessage` needs, plus the optional `chatgpt-account-id`.
 - `src/responses-adapter.ts` — `createCodexResponsesAdapter`, a plain `(source, quirks?)` `AdapterFactory`.
 - `src/content-type-repair.ts` — `withCodexContentTypeRepair`, a fetch decorator for a backend content-type bug.
 - `src/index.ts` — the public surface; nothing else is imported by consumers.

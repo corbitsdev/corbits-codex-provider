@@ -1,7 +1,7 @@
 import type { ConversationTurn, LastCycleSource } from "@intx/types/runtime";
 import { type } from "arktype";
 import { describe, expect, test } from "bun:test";
-import { createCodexResponsesAdapter } from "./index.js";
+import { CodexQuirksError, createCodexResponsesAdapter } from "./index.js";
 
 const source: LastCycleSource = {
   sourceId: "test/codex",
@@ -55,6 +55,27 @@ describe("Codex responses adapter — request shape", () => {
 
     const withoutAccount = adapter.buildRequest(turns, "gpt-5.5", {});
     expect(withoutAccount.headers["chatgpt-account-id"]).toBeUndefined();
+  });
+
+  test("sends the account id quirk as the header, and the option overrides it", () => {
+    const adapter = createCodexResponsesAdapter(source, {
+      ...quirks,
+      accountId: "acct-quirk",
+    });
+    expect(
+      adapter.buildRequest(turns, "gpt-5.5", {}).headers["chatgpt-account-id"],
+    ).toBe("acct-quirk");
+    expect(
+      adapter.buildRequest(turns, "gpt-5.5", {
+        providerOptions: { codexAccountId: "acct-option" },
+      }).headers["chatgpt-account-id"],
+    ).toBe("acct-option");
+  });
+
+  test("rejects an account id quirk that would split the header", () => {
+    expect(() =>
+      createCodexResponsesAdapter(source, { ...quirks, accountId: "a\r\nb" }),
+    ).toThrow(CodexQuirksError);
   });
 
   test("sends the session id in both the body and the header", () => {

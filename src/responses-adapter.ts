@@ -16,13 +16,16 @@ import { parseCodexQuirks, type CodexQuirks } from "./quirks.js";
 
 // `store` and `parallelToolCalls` need an explicit `false` on the wire, and
 // `maxOutputTokens: false` because the backend 400s on `max_output_tokens`.
-function codexResponsesQuirks(): ResponsesQuirks {
+function codexResponsesQuirks(quirks: CodexQuirks): ResponsesQuirks {
   return {
     path: CODEX_RESPONSES_PATH,
     headers: {
       static: {
         "openai-beta": "responses=experimental",
         originator: CODEX_ORIGINATOR,
+        ...(quirks.accountId !== undefined
+          ? { "chatgpt-account-id": quirks.accountId }
+          : {}),
       },
       fromOption: [
         { optionKey: CODEX_ACCOUNT_ID_OPTION, header: "chatgpt-account-id" },
@@ -55,7 +58,8 @@ function codexResponsesHooks(quirks: CodexQuirks): ResponsesHooks {
 /**
  * `AdapterFactory` for Codex's Responses-speaking ChatGPT backend. `quirks`
  * is this package's own {@link CodexQuirks} (an `InferenceSource.quirks`
- * bag) carrying the host identity `wrapCodexBridgeMessage` needs; unlike
+ * bag) carrying the host identity `wrapCodexBridgeMessage` needs and the
+ * optional `chatgpt-account-id`; unlike
  * `@corbits/openai-responses`'s own quirks, an absent bag is a validation
  * error rather than a default, since there is no honest generic product
  * name to fall back to. This shape — `(source, quirks?)` — is what makes
@@ -64,7 +68,7 @@ function codexResponsesHooks(quirks: CodexQuirks): ResponsesHooks {
 export const createCodexResponsesAdapter: AdapterFactory = (source, quirks) => {
   const parsed = parseCodexQuirks(quirks);
   return responsesAdapterFactory(
-    codexResponsesQuirks(),
+    codexResponsesQuirks(parsed),
     codexResponsesHooks(parsed),
   )(source);
 };
