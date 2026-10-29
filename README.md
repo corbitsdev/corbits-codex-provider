@@ -100,7 +100,7 @@ process.stdout.write("\n");
 | `codexTokensFromResponse(response, now, previousRefresh?)` | Maps a token endpoint response to `CodexTokens`.                                                                     |
 | `accountIdFromIdToken(idToken)`                            | Reads the ChatGPT account id from an `id_token`. Returns `undefined` on malformed input; does not verify signatures. |
 | `wrapCodexBridgeMessage(prompt, identity)`                 | The leading `developer` message the adapter builds from the host's system prompt.                                    |
-| `CodexQuirks`, `parseCodexQuirks`, `CodexQuirksError`      | Schema, parser and error for `{ productName, environmentTagName }`. Unknown keys are rejected.                       |
+| `CodexQuirks`, `parseCodexQuirks`, `CodexQuirksError`      | Schema, parser and error for `{ productName, environmentTagName, accountId? }`. Unknown keys are rejected.           |
 | `CodexTokens`, `FetchLike`                                 | Types.                                                                                                               |
 | `CODEX_PROVIDER`                                           | The `"codex"` provider id.                                                                                           |
 | `CODEX_BASE_URL`, `CODEX_RESPONSES_PATH`                   | `https://chatgpt.com/backend-api` and `/codex/responses`.                                                            |
@@ -159,7 +159,7 @@ export const deps = {
 };
 ```
 
-Each Codex source points at `CODEX_BASE_URL`, uses the OAuth access token as its credential, and carries `quirks: { productName, environmentTagName }` naming the host. Pass the credential's `accountId` metadata as `providerOptions[CODEX_ACCOUNT_ID_OPTION]`.
+Each Codex source points at `CODEX_BASE_URL`, uses the OAuth access token as its credential, and carries `quirks: { productName, environmentTagName }` naming the host. Put the credential's `accountId` metadata in the source's quirks as `accountId`; it is sent as `chatgpt-account-id`, and a per-call `providerOptions[CODEX_ACCOUNT_ID_OPTION]` overrides it. The quirk binds the source to one ChatGPT account, so each account's credential needs its own source, and the quirk is re-set when the credential is signed in to another account.
 
 ## License
 
