@@ -22,7 +22,7 @@ than reimplementing OAuth or the Responses wire protocol.
 ## Rules
 
 - `@corbits/oauth-core`, `@corbits/openai-responses`, `@intx/inference`,
-  and `@intx/types` are peer dependencies (`^0.1.0` and `^0.4.0`, pinned
+  and `@intx/types` are peer dependencies (ranges in `package.json`, pinned
   exactly in `devDependencies`) — never vendor or fork them. An adapter
   must plug into the host's own copies of the harness and its sibling
   packages, not second bundled ones.
