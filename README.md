@@ -5,13 +5,13 @@ OpenAI Codex ("Login with ChatGPT") for `@intx/inference`: the OAuth client conf
 ## Why @corbits/codex-provider?
 
 1. **Inference on a ChatGPT subscription.** Codex has no API-key path. This package supplies the PKCE login config, the code exchange and refresh, and the `chatgpt-account-id` the backend requires on every request.
-2. **The exact request Codex accepts.** `store: false`, `parallel_tool_calls: false`, no `max_output_tokens`, the host prompt as a leading `developer` message, and the Codex CLI's `originator` header are fixed in the adapter, not left to each host.
+2. **The exact request Codex accepts.** `store: false`, `parallel_tool_calls: true`, no `max_output_tokens`, the host prompt as a leading `developer` message, and the Codex CLI's `originator` header are fixed in the adapter, not left to each host.
 3. **Backend bugs repaired, host identity required.** `withCodexContentTypeRepair` restores the `content-type` the backend drops on some SSE streams. The host names itself through `CodexQuirks`; there is no default product name.
 
 ## Install
 
 ```bash
-bun add @corbits/codex-provider @corbits/oauth-core@^0.2.0 @corbits/openai-responses@^0.2.0 @intx/inference@^0.4.0 @intx/types@^0.4.0
+bun add @corbits/codex-provider @corbits/oauth-core@^0.2.0 @corbits/openai-responses@^0.2.4 @intx/inference@^0.4.0 @intx/types@^0.4.0
 ```
 
 Runs on Bun >= 1.2 or Node >= 24.
