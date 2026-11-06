@@ -15,8 +15,8 @@ import {
 import { wrapCodexBridgeMessage } from "./instructions.js";
 import { parseCodexQuirks, type CodexQuirks } from "./quirks.js";
 
-// `store` and `parallelToolCalls` need an explicit `false` on the wire, and
-// `maxOutputTokens: false` because the backend 400s on `max_output_tokens`.
+// `store` needs an explicit `false` on the wire, and `maxOutputTokens: false`
+// omits `max_output_tokens`, which the backend 400s on.
 function codexResponsesQuirks(quirks: CodexQuirks): ResponsesQuirks {
   return {
     path: CODEX_RESPONSES_PATH,
@@ -37,7 +37,7 @@ function codexResponsesQuirks(quirks: CodexQuirks): ResponsesQuirks {
     systemPrompt: { role: "developer", shape: "parts" },
     contentShape: "typed",
     store: false,
-    parallelToolCalls: false,
+    parallelToolCalls: true,
     maxOutputTokens: false,
     reasoning: {
       effortOption: CODEX_REASONING_EFFORT_OPTION,

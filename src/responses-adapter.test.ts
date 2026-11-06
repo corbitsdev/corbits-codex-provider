@@ -39,8 +39,8 @@ function parseCodexBody(rawBody: string) {
 // chatgpt-account-id header only rides when the option is set, session_id
 // rides in both the header and the body, `instructions` is omitted (the
 // host's own system prompt leads `input` as a wrapped developer message),
-// and the three fields the backend requires explicit values for (`store`,
-// `parallel_tool_calls`, `max_output_tokens`) are on the wire correctly.
+// `store` and `max_output_tokens` are set as the backend requires, and
+// `parallel_tool_calls` is on.
 describe("Codex responses adapter — request shape", () => {
   test("throws when the quirks bag is absent — there is no honest default product name", () => {
     expect(() => createCodexResponsesAdapter(source, undefined)).toThrow();
@@ -104,13 +104,13 @@ describe("Codex responses adapter — request shape", () => {
     expect(bridgeText).toContain("operate carefully");
   });
 
-  test("always sends store:false and parallel_tool_calls:false, and omits max_output_tokens", () => {
+  test("always sends store:false and parallel_tool_calls:true, and omits max_output_tokens", () => {
     const adapter = createCodexResponsesAdapter(source, quirks);
     const request = adapter.buildRequest(turns, "gpt-5.5", { maxTokens: 4096 });
     const body = parseCodexBody(request.body);
 
     expect(body.store).toBe(false);
-    expect(body.parallel_tool_calls).toBe(false);
+    expect(body.parallel_tool_calls).toBe(true);
     expect(body.max_output_tokens).toBeUndefined();
   });
 
